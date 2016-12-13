@@ -200,9 +200,11 @@ class LoginController extends Controller {
 	 * @param string $password
 	 * @param string $redirect_url
 	 * @param boolean $remember_login
+	 * @param string $timezone
+	 * @param string $timezone_offset
 	 * @return RedirectResponse
 	 */
-	public function tryLogin($user, $password, $redirect_url, $remember_login = false) {
+	public function tryLogin($user, $password, $redirect_url, $remember_login = false, $timezone = '', $timezone_offset = '') {
 		$currentDelay = $this->throttler->getDelay($this->request->getRemoteAddress());
 		$this->throttler->sleepDelay($this->request->getRemoteAddress());
 
@@ -240,12 +242,17 @@ class LoginController extends Controller {
 		// TODO: remove password checks from above and let the user session handle failures
 		// requires https://github.com/owncloud/core/pull/24616
 		$this->userSession->login($user, $password);
-		$this->userSession->createSessionToken($this->request, $loginResult->getUID(), $user, $password, $remember_login);
+		$this->userSession->createSessionToken($this->request, $loginResult->getUID(), $user, $password, (int)$remember_login);
 
 		// User has successfully logged in, now remove the password reset link, when it is available
 		$this->config->deleteUserValue($loginResult->getUID(), 'core', 'lostpassword');
 
 		$this->session->set('last-password-confirm', $loginResult->getLastLogin());
+
+		if ($timezone_offset !== '') {
+			$this->config->setUserValue($loginResult->getUID(), 'core', 'timezone', $timezone);
+			$this->session->set('timezone', $timezone_offset);
+		}
 
 		if ($this->twoFactorManager->isTwoFactorAuthenticated($loginResult)) {
 			$this->twoFactorManager->prepareTwoFactorLogin($loginResult, $remember_login);

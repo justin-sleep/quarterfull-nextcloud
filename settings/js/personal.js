@@ -46,61 +46,6 @@ jQuery.fn.keyUpDelayedOrEnter = function (callback, allowEmptyValue) {
 	});
 };
 
-
-/**
- * Post the email address change to the server.
- */
-function changeEmailAddress () {
-	var emailInfo = $('#email');
-	if (emailInfo.val() === emailInfo.defaultValue) {
-		return;
-	}
-	emailInfo.defaultValue = emailInfo.val();
-	OC.msg.startSaving('#lostpassword .msg');
-	var post = $("#lostpassword").serializeArray();
-	$.ajax({
-		type: 'PUT',
-		url: OC.generateUrl('/settings/users/{id}/mailAddress', {id: OC.currentUser}),
-		data: {
-			mailAddress: post[0].value
-		}
-	}).done(function(result){
-		// I know the following 4 lines look weird, but that is how it works
-		// in jQuery -  for success the first parameter is the result
-		//              for failure the first parameter is the result object
-		OC.msg.finishedSaving('#lostpassword .msg', result);
-	}).fail(function(result){
-		OC.msg.finishedError('#lostpassword .msg', result.responseJSON.message);
-	});
-}
-
-/**
- * Post the display name change to the server.
- */
-function changeDisplayName () {
-	if ($('#displayName').val() !== '') {
-		OC.msg.startSaving('#displaynameform .msg');
-		// Serialize the data
-		var post = $("#displaynameform").serialize();
-		// Ajax foo
-		$.post(OC.generateUrl('/settings/users/{id}/displayName', {id: OC.currentUser}), post, function (data) {
-			if (data.status === "success") {
-				$('#oldDisplayName').val($('#displayName').val());
-				// update displayName on the top right expand button
-				$('#expandDisplayName').text($('#displayName').val());
-				// update avatar if avatar is available
-				if(!$('#removeavatar').hasClass('hidden')) {
-					updateAvatar();
-				}
-			}
-			else {
-				$('#newdisplayname').val(data.data.displayName);
-			}
-			OC.msg.finishedSaving('#displaynameform .msg', data);
-		});
-	}
-}
-
 function updateAvatar (hidedefault) {
 	var $headerdiv = $('#header .avatardiv');
 	var $displaydiv = $('#displayavatar .avatardiv');
@@ -120,16 +65,9 @@ function updateAvatar (hidedefault) {
 	$displaydiv.avatar(OC.currentUser, 145, true, null, function() {
 		$displaydiv.removeClass('loading');
 		$('#displayavatar img').show();
-	});
-	$.get(OC.generateUrl(
-		'/avatar/{user}/{size}',
-		{
-			user: OC.currentUser,
-			size: 1
-		}
-	), function (result) {
-		if (typeof(result) === 'string') {
-			// Show the delete button when the avatar is custom
+		if($('#displayavatar img').length === 0) {
+			$('#removeavatar').removeClass('inlineblock').addClass('hidden');
+		} else {
 			$('#removeavatar').removeClass('hidden').addClass('inlineblock');
 		}
 	});
@@ -369,7 +307,6 @@ $(document).ready(function () {
 			url: OC.generateUrl('/avatar/'),
 			success: function () {
 				updateAvatar(true);
-				$('#removeavatar').addClass('hidden').removeClass('inlineblock');
 			}
 		});
 	});
@@ -396,24 +333,17 @@ $(document).ready(function () {
 		drawTitles: true,
 	});
 
-	// does the user have a custom avatar? if he does show #removeavatar
-	$.get(OC.generateUrl(
-		'/avatar/{user}/{size}',
-		{
-			user: OC.currentUser,
-			size: 1
-		}
-	), function (result) {
-		if (typeof(result) === 'string') {
-			// Show the delete button when the avatar is custom
-			$('#removeavatar').removeClass('hidden').addClass('inlineblock');
-		}
-	});
-
 	// Load the big avatar
 	if (oc_config.enable_avatars) {
-		$('#avatarform .avatardiv').avatar(OC.currentUser, 145);
+		$('#avatarform .avatardiv').avatar(OC.currentUser, 145, true, null, function() {
+			if($('#displayavatar img').length === 0) {
+				$('#removeavatar').removeClass('inlineblock').addClass('hidden');
+			} else {
+				$('#removeavatar').removeClass('hidden').addClass('inlineblock');
+			}
+		});
 	}
+	
 
 	// Show token views
 	var collection = new OC.Settings.AuthTokenCollection();

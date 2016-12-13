@@ -534,6 +534,17 @@ $CONFIG = array(
 'updater.server.url' => 'https://updates.nextcloud.com/updater_server/',
 
 /**
+ * The channel that Nextcloud should use to look for updates
+ *
+ * Supported values:
+ *   - ``daily``
+ *   - ``beta`
+ *   - ``stable``
+ *   - ``production``
+ */
+'updater.release.channel' => 'stable',
+
+/**
  * Is Nextcloud connected to the Internet or running in a closed network?
  */
 'has_internet_connection' => true,
@@ -667,7 +678,7 @@ $CONFIG = array(
  * seen in the first-run wizard and on Personal pages.
  */
 'customclient_desktop' =>
-	'https://nextcloud.com/install/',
+	'https://nextcloud.com/install/#install-clients',
 'customclient_android' =>
 	'https://play.google.com/store/apps/details?id=com.nextcloud.client',
 'customclient_ios' =>

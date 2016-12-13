@@ -24,7 +24,7 @@ script(
 
 <?php if($_['appstoreEnabled']): ?>
 	<li>
-		<a class="app-external" target="_blank" rel="noreferrer" href="https://docs.nextcloud.org/server/10/developer_manual/"><?php p($l->t('Developer documentation'));?> ↗</a>
+		<a class="app-external" target="_blank" rel="noreferrer" href="https://docs.nextcloud.org/server/11/developer_manual/"><?php p($l->t('Developer documentation'));?> ↗</a>
 	</li>
 <?php endif; ?>
 </script>
@@ -53,7 +53,7 @@ script(
 	<div class="app-level">
 		{{{level}}}
 	</div>
-	{{#if score}}
+	{{#if ratingNumThresholdReached }}
 	<div class="app-score">{{{score}}}</div>
 	{{/if}}
 	<div class="app-detailpage"></div>
@@ -125,17 +125,16 @@ script(
 	<input class="update hidden" type="submit" value="<?php p($l->t('Update to %s', array('{{update}}'))); ?>" data-appid="{{id}}" />
 	{{#if active}}
 	<input class="enable" type="submit" data-appid="{{id}}" data-active="true" value="<?php p($l->t("Disable"));?>"/>
-	<span class="groups-enable">
+	<div class="groups-enable">
 		<input type="checkbox" class="groups-enable__checkbox checkbox" id="groups_enable-{{id}}"/>
 		<label for="groups_enable-{{id}}"><?php p($l->t('Enable only for specific groups')); ?></label>
-	</span>
-	<br />
+	</div>
 	<input type="hidden" id="group_select" title="<?php p($l->t('All')); ?>" style="width: 200px">
 	{{else}}
 	<input class="enable{{#if needsDownload}} needs-download{{/if}}" type="submit" data-appid="{{id}}" data-active="false" {{#unless canInstall}}disabled="disabled"{{/unless}} value="<?php p($l->t("Enable"));?>"/>
 	{{/if}}
 	{{#if canUnInstall}}
-	<input class="uninstall" type="submit" value="<?php p($l->t('Uninstall App')); ?>" data-appid="{{id}}" />
+	<input class="uninstall" type="submit" value="<?php p($l->t('Uninstall app')); ?>" data-appid="{{id}}" />
 	{{/if}}
 
 	<div class="warning hidden"></div>

@@ -549,14 +549,6 @@ html.ie8 #fileList tr.selected td.filename>.selectCheckBox {
 	border-top-right-radius: 3px;
 	min-width: 100px;
 }
-.bubble:after,
-#app-navigation .app-navigation-entry-menu:after {
-	right: 12px;
-}
-.bubble:before,
-#app-navigation .app-navigation-entry-menu:before {
-	right: 6px;
-}
 
 /* force show the loading icon, not only on hover */
 #fileList .icon-loading-small {
@@ -662,20 +654,16 @@ html.ie8 .column-mtime .selectedActions {
 
 /* show share action of shared items darker to distinguish from non-shared */
 #fileList a.action.action-share.permanent.shared-style,
-#fileList a.action.action-favorite.permanent,
 /* show hovered permanent entries darker */
-#fileList tr a.action.action-share.permanent:hover,
-#fileList tr a.action.action-share.permanent:focus,
-#fileList tr a.action.action-menu.permanent:hover,
-#fileList tr a.action.action-menu.permanent:focus {
+#fileList tr a.action.action.permanent:hover,
+#fileList tr a.action.action.permanent:focus {
 	-ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=70)" !important;
 	filter: alpha(opacity=70) !important;
 	opacity: .7 !important;
 	display:inline;
 }
 /* always show actions on mobile, not only on hover */
-#fileList a.action.action-share.permanent,
-#fileList a.action.action-menu.permanent {
+#fileList a.action.permanent {
 	-ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=30)" !important;
 	filter: alpha(opacity=30) !important;
 	opacity: .3 !important;
@@ -780,7 +768,7 @@ html.ie8 #controls .button.new {
 }
 
 .newFileMenu {
-	width: 140px;
+	width: 200px;
 	margin-left: -56px;
 	margin-top: 25px;
 	z-index: 1001;
@@ -817,7 +805,9 @@ html.ie8 #controls .button.new {
 }
 
 .newFileMenu .filenameform input {
-	width: 100px;
+	width: 100%;
+	box-sizing: border-box;
+	margin: -2px 0;
 }
 
 #fileList .popovermenu .action {
